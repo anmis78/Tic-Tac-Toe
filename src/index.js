@@ -25,9 +25,9 @@ function calculateWinner(squares){
 
   for(var i=0; i<lines.length; i++){
     let [a,b,c] = lines[i];
-    //console.log(i);
-    //console.log(squares);
-    //if(squares[a] && squares[a] === squares[b] &&squares[a] === squares[c]) return squares(a);
+    console.log(i);
+    console.log(squares);
+    if(squares[a] && squares[a] === squares[b] &&squares[a] === squares[c]) return squares[a];
   }
   return null
 }
@@ -103,7 +103,7 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[history.length -1];
     let status;
-    if (calculateWinner(this.state.squares)){
+    if (calculateWinner(current.squares)){
       status = "Winner: "+ (this.state.xIsNext?'O':'X');
     }else status = "Next player: "+ (this.state.xIsNext?'X':'O');
     
