@@ -12,7 +12,6 @@ function Square(props){
 }
 
 function calculateWinner(squares){
-  console.log(squares);
   const lines = [
   [0,1,2],
   [3,4,5],
@@ -25,8 +24,7 @@ function calculateWinner(squares){
 
   for(var i=0; i<lines.length; i++){
     let [a,b,c] = lines[i];
-    console.log(i);
-    console.log(squares);
+
     if(squares[a] && squares[a] === squares[b] &&squares[a] === squares[c]) return squares[a];
   }
   return null
@@ -79,29 +77,51 @@ class Game extends React.Component {
       history: [{
         squares: Array(9).fill(null),
       }],
+      stepNumber: 0,
       xIsNext: true
     };
   }
   
+  jumpTo(step){
+    this.setState({
+      stepNumber: step,
+      xIsNext: (step % 2) === 0,
+    })
+  }
+  
   handleClick(i) {
-    const history = this.state.history;
+    const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
-    const squares = current.squares.slice();
+    const winner = calculateWinner(current.squares);
 
-    if (calculateWinner(squares) || squares[i]) return;
+    if (calculateWinner(current.squares) || current.squares[i]) return;
     
-    squares[i] = this.state.xIsNext?'X':"O";
+    current.squares[i] = this.state.xIsNext?'X':"O";
     this.setState({
       history: history.concat([{
-        squares: squares,
+        squares: current.squares,
       }]),
+      stepNumber: history.length,
       xIsNext: !this.state.xIsNext     
     })
   }
 
   render() {
     const history = this.state.history;
-    const current = history[history.length -1];
+    const current = history[this.state.stepNumber];
+    const winner = calculateWinner(current.squares);
+    
+    const movers = history.map((_, move) => {
+      const desc = move ?
+      "Go to move #" + move : "Go to game start";
+      return(
+        <li key={move}>
+          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        </li>
+      );
+    });
+    
+
     let status;
     if (calculateWinner(current.squares)){
       status = "Winner: "+ (this.state.xIsNext?'O':'X');
@@ -117,7 +137,7 @@ class Game extends React.Component {
         </div>
         <div className='game-info'>
           <div>{status}</div>
-          <ol>{/* TODO */}</ol>
+          <ol>{movers}</ol>
         </div>
       </div>
     );
