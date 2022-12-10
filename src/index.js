@@ -2,13 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 
-function Square(props){
-  return (
-    <button className='square'
-      onClick={() => props.onClick({value: "X"})}>
-      {props.value}
-    </button>
-  );
+class Square extends React.Component{
+  render() {
+    return (
+      <button className='square'
+        onClick={() => this.props.onClick({value: "X"})}>
+        {this.props.value}
+      </button>
+    );
+  }
 }
 
 function calculateWinner(squares){
@@ -86,7 +88,7 @@ class Game extends React.Component {
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
-    })
+    });
   }
   
   handleClick(i) {
@@ -110,21 +112,22 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    
-    const movers = history.map((_, move) => {
-      const desc = move ?
-      "Go to move #" + move : "Go to game start";
-      return(
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    });
+
+    /* TO DO : trackback player move, not functional */
+    // const movers = history.map((_, move) => {
+    //   const desc = move ?
+    //   "Go to move #" + move : "Go to game start";
+    //   return(
+    //     <li key={move}>
+    //       <button onClick={() => this.jumpTo(move)}>{desc}</button>
+    //     </li>
+    //   );
+    // });
     
 
     let status;
     if (calculateWinner(current.squares)){
-      status = "Winner: "+ (this.state.xIsNext?'O':'X');
+      status = "Winner: "+ winner;
     }else status = "Next player: "+ (this.state.xIsNext?'X':'O');
     
     return (
@@ -137,7 +140,7 @@ class Game extends React.Component {
         </div>
         <div className='game-info'>
           <div>{status}</div>
-          <ol>{movers}</ol>
+          {/* <ol>{movers}</ol> */}
         </div>
       </div>
     );
