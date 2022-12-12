@@ -1,104 +1,116 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import './index.css';
 
-function Square(props){
-  return (
-    <button className='square'
-      onClick={() => props.onClick({value: "X"})}>
-      {props.value}
-    </button>
-  );
-}
-
-function calculateWinner(squares){
-  const lines = [
-  [0,1,2],
-  [3,4,5],
-  [6,7,8],
-  [0,3,6],
-  [1,4,7],
-  [2,5,8],
-  [0,4,8],
-  [2,4,6]];
-
-  for(var i=0; i<lines.length; i++){
-    let [a,b,c] = lines[i];
-    if(squares[a]&&squares[b]&&squares[c]) return 1
-  }
-  return null
-}
-
-class Board extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      squares: Array(9).fill(null),
-      xIsNext: true
-    };
-  }
-  handleClick(i) {
-    const squares2 = this.state.squares.slice();
-    if(calculateWinner(this.state.squares) || this.state.squares[i]) return
-    squares2[i] = this.state.xIsNext?'X':"O";
-    this.setState({
-      squares: squares2,
-      xIsNext: !this.state.xIsNext     
-    })
+const rowStyle = {
+    display: 'flex'
   }
   
-  renderSquare(i){
-    return (
-      <Square value={this.state.squares[i]}
-        onClick={() => this.handleClick(i)}
-      />);
-
+  const squareStyle = {
+    'width':'60px',
+    'height':'60px',
+    'backgroundColor': '#ddd',
+    'margin': '4px',
+    'display': 'flex',
+    'justifyContent': 'center',
+    'alignItems': 'center',
+    'fontSize': '20px',
+    'color': 'white'
+  }
+  
+  const boardStyle = {
+    'backgroundColor': '#eee',
+    'width': '208px',
+    'alignItems': 'center',
+    'justifyContent': 'center',
+    'display': 'flex',
+    'flexDirection': 'column',
+    'border': '3px #eee solid'
+  }
+  
+  const containerStyle = {
+    'display': 'flex',
+    'alignItems': 'center',
+    'flexDirection': 'column'
+  }
+  
+  const instructionsStyle = {
+    'marginTop': '5px',
+    'marginBottom': '5px',
+    'fontWeight': 'bold',
+    'fontSize': '16px',
+  }
+  
+  const buttonStyle = {
+    'marginTop': '15px',
+    'marginBottom': '16px',
+    'width': '80px',
+    'height': '40px',
+    'backgroundColor': '#8acaca',
+    'color': 'white',
+    'fontSize': '16px',
   }
 
-  render() {
-    let status;
-    if (calculateWinner(this.state.squares)){
-      status = "Winner: "+ (this.state.xIsNext?'O':'X');
-    }else status = "Next player: "+ (this.state.xIsNext?'X':'O');
-
-    return (
-      <div>
-        <div className='status'>{status}</div>
-        <div className='board-row'>
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className='board-row'>
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className='board-row'>
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    )
+class Square extends React.Component {
+    render() {
+      return (
+        <button className="square"
+        style={squareStyle}>
+          {/* TODO */}
+        </button>
+      );
+    }
   }
-}
-
-class Game extends React.Component {
-  render() {
-    return (
-      <div className="game">
-        <div className='game-board'>
-          <Board />
+  
+  class Board extends React.Component {
+    renderSquare(i) {
+      return <Square />;
+    }
+  
+    render() {
+      const status = 'Next player: X';
+  
+      return (
+        <div style={containerStyle} className="gameBoard">
+          <div id="statusArea" className="status" style={instructionsStyle}>Next player: <span>X</span></div>
+          <div id="winnerArea" className="winner" style={instructionsStyle}>Winner: <span>None</span></div>
+          <button style={buttonStyle}>Reset</button>
+          <div style={boardStyle}>
+            <div className="board-row" style={rowStyle}>
+              <Square />
+              <Square />
+              <Square />
+            </div>
+            <div className="board-row" style={rowStyle}>
+              <Square />
+              <Square />
+              <Square />
+            </div>
+            <div className="board-row" style={rowStyle}>
+              <Square />
+              <Square />
+              <Square />
+            </div>
+          </div>
         </div>
-        <div className='game-info'>
-          <div>{/* status */}</div>
-          <ol>{/* TODO */}</ol>
-        </div>
-      </div>
-    );
+      );
+    }
   }
-}
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<Game />)
+  
+  class Game extends React.Component {
+    render() {
+      return (
+        <div className="game">
+          <div className="game-board">
+            <Board />
+          </div>
+        </div>
+      );
+    }
+  }
+  
+  // ========================================
+  
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(<Game />);
+  
