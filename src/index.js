@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import './index.css';
 
 const rowStyle = {
@@ -52,44 +52,61 @@ const rowStyle = {
   }
 
 class Square extends React.Component {
-    render() {
-      return (
-        <button className="square"
-        style={squareStyle}>
-          {/* TODO */}
-        </button>
-      );
-    }
+  render(){    
+    return (
+      <button className="square"
+        style={squareStyle} onClick={this.props.onClick}>
+        {this.props.value}
+      </button>
+    );
   }
-  
+}
+
+
   class Board extends React.Component {
-    renderSquare(i) {
-      return <Square />;
+    constructor(props) {
+      super(props);
+      this.state = {
+        squares: Array(9).fill(null),
+        xIsNext: true
+      }
     }
-  
+    renderSquare(i) {
+      return <Square value={this.state.squares[i]} onClick={() => this.handleClick(i)}/>
+    }
+
+    handleClick(i){
+      let square_ = this.state.squares.slice();
+      square_[i] = this.state.xIsNext? 'X':'O'
+      this.setState({
+        squares: square_,
+        xIsNext: !this.state.xIsNext
+      })
+    }
+
     render() {
       const status = 'Next player: X';
   
       return (
         <div style={containerStyle} className="gameBoard">
-          <div id="statusArea" className="status" style={instructionsStyle}>Next player: <span>X</span></div>
+          <div id="statusArea" className="status" style={instructionsStyle}>{"Next player: "+ (this.state.xIsNext? 'X':'O')}</div>
           <div id="winnerArea" className="winner" style={instructionsStyle}>Winner: <span>None</span></div>
           <button style={buttonStyle}>Reset</button>
           <div style={boardStyle}>
             <div className="board-row" style={rowStyle}>
-              <Square />
-              <Square />
-              <Square />
+              {this.renderSquare(0)}
+              {this.renderSquare(1)}
+              {this.renderSquare(2)}
             </div>
             <div className="board-row" style={rowStyle}>
-              <Square />
-              <Square />
-              <Square />
+              {this.renderSquare(3)}
+              {this.renderSquare(4)}
+              {this.renderSquare(5)}
             </div>
             <div className="board-row" style={rowStyle}>
-              <Square />
-              <Square />
-              <Square />
+              {this.renderSquare(6)}
+              {this.renderSquare(7)}
+              {this.renderSquare(8)}
             </div>
           </div>
         </div>
