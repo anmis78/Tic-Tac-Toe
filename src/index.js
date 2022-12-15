@@ -62,7 +62,6 @@ class Square extends React.Component {
   }
 }
 
-
   class Board extends React.Component {
     constructor(props) {
       super(props);
@@ -76,21 +75,38 @@ class Square extends React.Component {
     }
 
     handleClick(i){
+
       let square_ = this.state.squares.slice();
-      square_[i] = this.state.xIsNext? 'X':'O'
-      this.setState({
-        squares: square_,
-        xIsNext: !this.state.xIsNext
-      })
+      if (this.calculateWinner(square_) || square_[i]) return
+      else{
+        square_[i] = this.state.xIsNext? 'X':'O';
+        this.setState({
+          squares: square_,
+          xIsNext: !this.state.xIsNext
+        });
+      }
+    }
+
+    calculateWinner(square){
+      let lines = [
+        [0,1,2], [3,4,5], [6,7,8],
+        [0,3,6], [1,4,7], [2,5,8],
+        [0,4,8], [2,4,6]
+      ];
+      console.log(square);
+      for(var i=0; i<8; i++){
+        let [a, b, c] = lines[i];
+        if(square[a] && square[a] === square[b] && square[b] === square[c])
+          return square[a];
+      }
+      return "";
     }
 
     render() {
-      const status = 'Next player: X';
-  
       return (
         <div style={containerStyle} className="gameBoard">
           <div id="statusArea" className="status" style={instructionsStyle}>{"Next player: "+ (this.state.xIsNext? 'X':'O')}</div>
-          <div id="winnerArea" className="winner" style={instructionsStyle}>Winner: <span>None</span></div>
+          <div id="winnerArea" className="winner" style={instructionsStyle}>{"Winner: " + this.calculateWinner(this.state.squares)}</div>
           <button style={buttonStyle}>Reset</button>
           <div style={boardStyle}>
             <div className="board-row" style={rowStyle}>
